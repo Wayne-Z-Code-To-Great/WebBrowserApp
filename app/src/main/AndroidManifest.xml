@@ -9,7 +9,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.WebBrowserApp">
-        <activity android:name=".BrowserActivity" android:windowSoftInputMode="adjustPan">
+        <activity android:name=".BrowserActivity" android:windowSoftInputMode="adjustPan"
+            android:saveEnabled="false">
+
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

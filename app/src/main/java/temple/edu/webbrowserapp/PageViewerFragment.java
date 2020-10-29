@@ -2,6 +2,7 @@ package temple.edu.webbrowserapp;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -15,7 +16,6 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 public class PageViewerFragment extends Fragment {
-    String url;
     WebView webView;
     sentCurrentUrlInterface parentActivity;
     public PageViewerFragment() {
@@ -40,26 +40,32 @@ public class PageViewerFragment extends Fragment {
         webView=(WebView) v.findViewById(R.id.webView);
         webView.canGoBack();
         webView.canGoForward();
-        webView.setWebViewClient(new myWebViewClient());
+        webView.setWebViewClient(new WebViewClient(){
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                super.onPageStarted(view, url, favicon);
+                parentActivity.sentlink(url);
+            }
+        });
         webView.getSettings().setLoadsImagesAutomatically(true);
         webView.getSettings().setJavaScriptEnabled(true); //enable javascript
         webView.getSettings().setLoadWithOverviewMode(true);
         webView.getSettings().setUseWideViewPort(true);
+        parentActivity.sentlink(webView.getUrl());
         webView.loadUrl("https:temple.edu");
+
+        if(savedInstanceState!=null) {
+            webView.restoreState(savedInstanceState);
+        }
         return v;
     }
 
-
-
-    private class myWebViewClient extends WebViewClient {
-        @Override
-        public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-            parentActivity.sentlink(webView.getUrl());
-            return super.shouldOverrideUrlLoading(view, request);
-        }
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 
+
     public void gettingUrl(String message) {
+        String url;
         url=message;
         webView.loadUrl(url);
     }
