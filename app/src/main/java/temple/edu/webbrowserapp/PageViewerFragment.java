@@ -61,6 +61,7 @@ public class PageViewerFragment extends Fragment {
 
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
+        webView.saveState(outState);
     }
 
 

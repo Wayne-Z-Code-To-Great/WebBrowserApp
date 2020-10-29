@@ -112,14 +112,6 @@ public class PageControlFragment extends Fragment {
         }
         return finaladdress;
     }
-//    public void onSaveInstanceState(Bundle outState) {
-//        super.onSaveInstanceState(outState);
-//        outState.putString(mURL_text, url_text.getText().toString());
-//    }
-//    public void onActivityCreated(Bundle savedInstanceState) {
-//        super.onActivityCreated(savedInstanceState);
-//        if(savedInstanceState!=null) {
-//            url_text.setText(savedInstanceState.getString(mURL_text));
-//        }
-//    }
+
+
 }

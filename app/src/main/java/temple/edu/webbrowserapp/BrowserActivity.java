@@ -10,19 +10,28 @@ import android.os.Bundle;
 public class BrowserActivity extends AppCompatActivity implements PageControlFragment.buttonClickInterface, PageViewerFragment.sentCurrentUrlInterface{
     PageControlFragment controlFragment=new PageControlFragment();
     PageViewerFragment viewerFragment=new PageViewerFragment();
+    FragmentManager manager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        FragmentManager manager=getSupportFragmentManager();
-        FragmentTransaction transaction=manager.beginTransaction();
-        transaction.add(R.id.page_control_container, controlFragment, "Url_text");
-        transaction.addToBackStack(null);
-        transaction.commit();
-        FragmentTransaction transaction2=manager.beginTransaction();
-        transaction2.add(R.id.page_viewer_container, viewerFragment);
-        transaction2.addToBackStack(null);
-        transaction2.commit();
+        manager=getSupportFragmentManager();
+
+        Fragment temporary;
+
+        if((temporary = manager.findFragmentById(R.id.page_control_container)) instanceof PageControlFragment) {
+            controlFragment=(PageControlFragment) temporary;
+        } else {
+            controlFragment=new PageControlFragment();
+            manager.beginTransaction().add(R.id.page_control_container, controlFragment).commit();
+        }
+
+        if((temporary=manager.findFragmentById(R.id.page_viewer_container)) instanceof PageViewerFragment) {
+            viewerFragment=(PageViewerFragment) temporary;
+        } else {
+            viewerFragment=new PageViewerFragment();
+            manager.beginTransaction().add(R.id.page_viewer_container, viewerFragment).commit();
+        }
     }
 
     @Override
