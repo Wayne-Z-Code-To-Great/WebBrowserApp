@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -24,6 +25,7 @@ public class PageControlFragment extends Fragment {
 
     private static final String ARG_PARAM1 = "URL_text";
     buttonClickInterface parentActivity;
+    EditText url_text;
 
     // TODO: Rename and change types of parameters
 
@@ -69,15 +71,16 @@ public class PageControlFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View myView=inflater.inflate(R.layout.fragment_page_control, container, false);
-        EditText url_text=myView.findViewById(R.id.Url);
+        url_text=myView.findViewById(R.id.Url);
         ImageButton goButton=myView.findViewById(R.id.enter_Button);
         ImageButton backButton=myView.findViewById(R.id.back_Button);
         ImageButton forwardButton=myView.findViewById(R.id.forward_Button);
         goButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                parentActivity.buttonClick(url_text.getText().toString());
-
+                String passedUrl=url_text.getText().toString();
+                passedUrl=checkMalformedUrl(passedUrl);
+                parentActivity.buttonClick(passedUrl);
             }
         });
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -99,5 +102,20 @@ public class PageControlFragment extends Fragment {
     interface buttonClickInterface {
         void buttonClick(String Url);
         void buttonClick(int i);
+    }
+
+    public void displayCurrentUrl(String s) {
+        url_text.setText(s, TextView.BufferType.EDITABLE);
+    }
+
+    public String checkMalformedUrl(String s) {
+        String finaladdress;
+        String pre="https://";
+        if(!(s.contains(pre))) {
+            finaladdress=pre+s;
+        } else {
+            finaladdress=s;
+        }
+        return finaladdress;
     }
 }

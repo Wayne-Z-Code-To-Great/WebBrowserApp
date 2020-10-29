@@ -7,46 +7,44 @@
     android:layout_height="match_parent"
     tools:context=".PageControlFragment">
 
-    <ImageButton
-        android:id="@+id/forward_Button"
-        android:layout_width="70dp"
-        android:layout_height="32dp"
-        android:src="@android:drawable/ic_media_ff"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/back_Button"
-        tools:layout_editor_absoluteY="19dp" />
-
     <EditText
         android:id="@+id/Url"
-        android:layout_width="179dp"
-        android:layout_height="44dp"
+        android:layout_width="204dp"
+        android:layout_height="39dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:ems="10"
         android:inputType="textUri"
         android:text="@string/Url_text"
-        app:layout_constraintEnd_toStartOf="@+id/enter_Button"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="16dp" />
-
-    <ImageButton
-        android:id="@+id/enter_Button"
-        android:layout_width="29dp"
-        android:layout_height="35dp"
-        android:src="@android:drawable/presence_online"
-        app:layout_constraintEnd_toStartOf="@+id/back_Button"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/Url"
-        tools:layout_editor_absoluteY="16dp" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
         android:id="@+id/back_Button"
         android:layout_width="70dp"
         android:layout_height="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="12dp"
         android:src="@android:drawable/ic_media_rew"
         app:layout_constraintEnd_toStartOf="@+id/forward_Button"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/enter_Button"
-        tools:layout_editor_absoluteY="19dp" />
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/enter_Button"
+        android:layout_width="29dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="16dp"
+        android:src="@android:drawable/presence_online"
+        app:layout_constraintStart_toEndOf="@+id/Url"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/forward_Button"
+        android:layout_width="70dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="16dp"
+        android:src="@android:drawable/ic_media_ff"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

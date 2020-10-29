@@ -1,8 +1,10 @@
 package temple.edu.webbrowserapp;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -15,9 +17,18 @@ import android.webkit.WebViewClient;
 public class PageViewerFragment extends Fragment {
     String url;
     WebView webView;
-
+    sentCurrentUrlInterface parentActivity;
     public PageViewerFragment() {
         // Required empty public constructor
+    }
+
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if(context instanceof sentCurrentUrlInterface) {
+            parentActivity=(sentCurrentUrlInterface) context;
+        } else {
+            throw new RuntimeException("You must implement this fragment");
+        }
     }
 
 
@@ -32,7 +43,9 @@ public class PageViewerFragment extends Fragment {
         webView.setWebViewClient(new myWebViewClient());
         webView.getSettings().setLoadsImagesAutomatically(true);
         webView.getSettings().setJavaScriptEnabled(true); //enable javascript
-        webView.loadUrl(url);
+        webView.getSettings().setLoadWithOverviewMode(true);
+        webView.getSettings().setUseWideViewPort(true);
+        webView.loadUrl("https:temple.edu");
         return v;
     }
 
@@ -41,6 +54,7 @@ public class PageViewerFragment extends Fragment {
     private class myWebViewClient extends WebViewClient {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+            parentActivity.sentlink(webView.getUrl());
             return super.shouldOverrideUrlLoading(view, request);
         }
     }
@@ -57,4 +71,9 @@ public class PageViewerFragment extends Fragment {
             webView.goForward();
         }
     }
+
+    interface sentCurrentUrlInterface {
+        void sentlink(String s);
+    }
+
 }

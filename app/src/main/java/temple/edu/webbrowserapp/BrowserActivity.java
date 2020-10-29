@@ -7,7 +7,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
 
-public class BrowserActivity extends AppCompatActivity implements  PageControlFragment.buttonClickInterface{
+public class BrowserActivity extends AppCompatActivity implements PageControlFragment.buttonClickInterface, PageViewerFragment.sentCurrentUrlInterface{
     PageControlFragment controlFragment=new PageControlFragment();
     PageViewerFragment viewerFragment=new PageViewerFragment();
     @Override
@@ -33,5 +33,10 @@ public class BrowserActivity extends AppCompatActivity implements  PageControlFr
     @Override
     public void buttonClick(int i) {
         viewerFragment.forwardOrback(i);
+    }
+
+    @Override
+    public void sentlink(String s) {
+        controlFragment.displayCurrentUrl(s);
     }
 }
