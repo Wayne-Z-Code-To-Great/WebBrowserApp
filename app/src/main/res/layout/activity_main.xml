@@ -6,23 +6,26 @@
     android:layout_height="match_parent"
     tools:context=".BrowserActivity">
 
-    <FrameLayout
-        android:id="@+id/page_control_frame_layout"
-        android:layout_width="406dp"
-        android:layout_height="110dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/page_control_container"
+        android:layout_width="383dp"
+        android:layout_height="131dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.346"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-    </FrameLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <FrameLayout
-        android:id="@+id/page_viewer_frame_layout"
-        android:layout_width="407dp"
-        android:layout_height="621dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/page_viewer_container"
+        android:layout_width="436dp"
+        android:layout_height="715dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/page_control_container">
 
-    </FrameLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

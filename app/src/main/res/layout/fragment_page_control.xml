@@ -1,14 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frameLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".PageControlFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+    <ImageButton
+        android:id="@+id/forward_Button"
+        android:layout_width="70dp"
+        android:layout_height="32dp"
+        android:src="@android:drawable/ic_media_ff"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/back_Button"
+        tools:layout_editor_absoluteY="19dp" />
 
-</FrameLayout>
+    <EditText
+        android:id="@+id/Url"
+        android:layout_width="179dp"
+        android:layout_height="44dp"
+        android:ems="10"
+        android:inputType="textUri"
+        android:text="@string/Url_text"
+        app:layout_constraintEnd_toStartOf="@+id/enter_Button"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="16dp" />
+
+    <ImageButton
+        android:id="@+id/enter_Button"
+        android:layout_width="29dp"
+        android:layout_height="35dp"
+        android:src="@android:drawable/presence_online"
+        app:layout_constraintEnd_toStartOf="@+id/back_Button"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/Url"
+        tools:layout_editor_absoluteY="16dp" />
+
+    <ImageButton
+        android:id="@+id/back_Button"
+        android:layout_width="70dp"
+        android:layout_height="32dp"
+        android:src="@android:drawable/ic_media_rew"
+        app:layout_constraintEnd_toStartOf="@+id/forward_Button"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/enter_Button"
+        tools:layout_editor_absoluteY="19dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
