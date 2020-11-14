@@ -17,6 +17,8 @@ import android.webkit.WebViewClient;
 
 public class PageViewerFragment extends Fragment {
     WebView webView;
+    String currentUrl;
+    String currentTitle;
     sentCurrentUrlInterface parentActivity;
     public PageViewerFragment() {
         // Required empty public constructor
@@ -37,13 +39,18 @@ public class PageViewerFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v=inflater.inflate(R.layout.fragment_page_viewer, container, false);
-        webView=(WebView) v.findViewById(R.id.webView);
+        webView= v.findViewById(R.id.webView);
         webView.canGoBack();
         webView.canGoForward();
         webView.setWebViewClient(new WebViewClient(){
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
+                currentUrl=url;
                 parentActivity.sentlink(url);
+            }
+            public void onPageFinished(WebView view, String url) {
+                currentTitle=view.getTitle();
+                getActivity().setTitle(currentTitle);
             }
         });
         webView.getSettings().setLoadsImagesAutomatically(true);
@@ -51,8 +58,7 @@ public class PageViewerFragment extends Fragment {
         webView.getSettings().setLoadWithOverviewMode(true);
         webView.getSettings().setUseWideViewPort(true);
         parentActivity.sentlink(webView.getUrl());
-        webView.loadUrl("https:temple.edu");
-
+//        webView.loadUrl("https:www.google.com");
         if(savedInstanceState!=null) {
             webView.restoreState(savedInstanceState);
         }
@@ -68,6 +74,7 @@ public class PageViewerFragment extends Fragment {
     public void gettingUrl(String message) {
         String url;
         url=message;
+        currentUrl=url;
         webView.loadUrl(url);
     }
 
