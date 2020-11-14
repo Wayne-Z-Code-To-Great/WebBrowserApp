@@ -54,6 +54,7 @@ PagerFragment.getCurrentWebViewInterface{
     @Override
     public void buttonClick(int i) {
         currentFragment.forwardOrback(i);
+        pagerFragment.notifyAll();
     }
 
     @Override
