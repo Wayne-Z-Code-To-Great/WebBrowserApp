@@ -90,8 +90,10 @@ public class PageControlFragment extends Fragment {
             }
         }));
 
+
         return myView;
     }
+
 
     interface buttonClickInterface {
         void buttonClick(String Url);

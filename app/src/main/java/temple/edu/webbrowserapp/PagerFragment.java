@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ public class PagerFragment extends Fragment {
     ArrayList<PageViewerFragment> fragments;
     ViewPager viewPager;
     getCurrentWebViewInterface parentActivity;
+
     public PagerFragment() {
         // Required empty public constructor
     }
@@ -49,8 +51,13 @@ public class PagerFragment extends Fragment {
         // Inflate the layout for this fragment
         View myView = inflater.inflate(R.layout.fragment_pager, container, false);
         viewPager=(ViewPager) myView.findViewById(R.id.viewPager);
-        fragments=new ArrayList<>();
-        fragments.add(new PageViewerFragment());
+        if(savedInstanceState!=null) {
+            fragments=(ArrayList<PageViewerFragment>)savedInstanceState.getSerializable("myViewFragments");
+        } else {
+            fragments=new ArrayList<>();
+            fragments.add(new PageViewerFragment());
+        }
+
         viewPager.setAdapter(new FragmentStatePagerAdapter(getChildFragmentManager()) {
             @NonNull
             @Override
@@ -65,7 +72,9 @@ public class PagerFragment extends Fragment {
             }
 
         });
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        ViewPager.OnPageChangeListener pageChangeListener=new ViewPager.OnPageChangeListener() {
+
+
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -73,22 +82,43 @@ public class PagerFragment extends Fragment {
 
             @Override
             public void onPageSelected(int position) {
-                    parentActivity.getCurrentWebView(position);
+//                if(lastPosition>position){
+//                    lastPosition-=2;
+//                } else if(lastPosition<position) {
+//                    lastPosition+=2;
+//                }
+//                if(lastPosition>=0 && lastPosition<fragments.size()) {
+//                    parentActivity.getCurrentWebView(lastPosition);
+//                } else {
+//                    parentActivity.getCurrentWebView(position);
+//                }
+                parentActivity.getCurrentWebView(viewPager.getCurrentItem());
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
 
             }
-        });
+        };
+        viewPager.addOnPageChangeListener(pageChangeListener);
+
+        FragmentStateAdapter fsa=new MyFragmentStateAdapter(getActivity());
         return myView;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable("myViewFragments",fragments);
     }
 
     public void addTab() {
         fragments.add(new PageViewerFragment());
         Objects.requireNonNull(viewPager.getAdapter()).notifyDataSetChanged();
         viewPager.setCurrentItem(fragments.size()-1);
+        parentActivity.getCurrentWebView(viewPager.getCurrentItem());
     }
+
 
     private class MyFragmentStateAdapter extends FragmentStateAdapter{
         public MyFragmentStateAdapter(@NonNull FragmentActivity fragmentActivity) {
@@ -114,5 +144,6 @@ public class PagerFragment extends Fragment {
     }
     interface getCurrentWebViewInterface {
         void getCurrentWebView(int position);
+
     }
 }

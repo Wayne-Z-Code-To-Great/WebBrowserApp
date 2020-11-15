@@ -11,8 +11,8 @@
         android:theme="@style/Theme.WebBrowserApp"
         android:usesCleartextTraffic="true">
         <activity android:name=".BrowserActivity"  android:windowSoftInputMode="adjustResize"
-            android:saveEnabled="false">
-
+            android:saveEnabled="false"
+            android:configChanges="orientation">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

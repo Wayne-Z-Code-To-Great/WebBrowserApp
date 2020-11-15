@@ -50,7 +50,8 @@ public class PageViewerFragment extends Fragment {
             }
             public void onPageFinished(WebView view, String url) {
                 currentTitle=view.getTitle();
-                getActivity().setTitle(currentTitle);
+                parentActivity.sentTitle(currentTitle);
+                parentActivity.sentTitleToList(currentTitle);
             }
         });
         webView.getSettings().setLoadsImagesAutomatically(true);
@@ -58,7 +59,6 @@ public class PageViewerFragment extends Fragment {
         webView.getSettings().setLoadWithOverviewMode(true);
         webView.getSettings().setUseWideViewPort(true);
         parentActivity.sentlink(webView.getUrl());
-//        webView.loadUrl("https:www.google.com");
         if(savedInstanceState!=null) {
             webView.restoreState(savedInstanceState);
         }
@@ -88,6 +88,8 @@ public class PageViewerFragment extends Fragment {
 
     interface sentCurrentUrlInterface {
         void sentlink(String s);
+        void sentTitle(String s);
+        void sentTitleToList(String s);
     }
 
 }
