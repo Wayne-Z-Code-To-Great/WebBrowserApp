@@ -15,25 +15,37 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Objects;
 
 
 public class PagerFragment extends Fragment {
 
-    ArrayList<PageViewerFragment> fragments;
-    ViewPager viewPager;
-    getCurrentWebViewInterface parentActivity;
+    private ArrayList<PageViewerFragment> pages;
+    private ViewPager viewPager;
+    private PagerInterface parentActivity;
+
+    private static final String PAGES_KEY="pages";
 
     public PagerFragment() {
         // Required empty public constructor
     }
 
+
+    public static PagerFragment newInstance(ArrayList<PageViewerFragment> pages) {
+        PagerFragment fragment=new PagerFragment();
+        Bundle args=new Bundle();
+        args.putSerializable(PAGES_KEY, pages);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if(context instanceof PagerFragment.getCurrentWebViewInterface) {
-            parentActivity= (PagerFragment.getCurrentWebViewInterface) context;
+        if(context instanceof PagerFragment.PagerInterface) {
+            parentActivity= (PagerFragment.PagerInterface) context;
         } else {
             throw new RuntimeException("You must implement this fragment");
         }
@@ -42,7 +54,9 @@ public class PagerFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        if(getArguments()!=null) {
+            pages=(ArrayList) getArguments().getSerializable(PAGES_KEY);
+        }
     }
 
     @Override
@@ -50,31 +64,30 @@ public class PagerFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View myView = inflater.inflate(R.layout.fragment_pager, container, false);
-        viewPager=(ViewPager) myView.findViewById(R.id.viewPager);
-        if(savedInstanceState!=null) {
-            fragments=(ArrayList<PageViewerFragment>)savedInstanceState.getSerializable("myViewFragments");
-        } else {
-            fragments=new ArrayList<>();
-            fragments.add(new PageViewerFragment());
-        }
+        viewPager = myView.findViewById(R.id.viewPager);
 
         viewPager.setAdapter(new FragmentStatePagerAdapter(getChildFragmentManager()) {
             @NonNull
             @Override
             public Fragment getItem(int position) {
-                parentActivity.getCurrentWebView(position);
-                return fragments.get(position);
+                return pages.get(position);
             }
 
             @Override
             public int getCount() {
-                return fragments.size();
+                return pages.size();
+            }
+
+            @Override
+            public int getItemPosition(@NonNull Object object) {
+                if(pages.contains(object))
+                    return pages.indexOf(object);
+                else
+                    return POSITION_NONE;
             }
 
         });
-        ViewPager.OnPageChangeListener pageChangeListener=new ViewPager.OnPageChangeListener() {
-
-
+        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -82,68 +95,60 @@ public class PagerFragment extends Fragment {
 
             @Override
             public void onPageSelected(int position) {
-//                if(lastPosition>position){
-//                    lastPosition-=2;
-//                } else if(lastPosition<position) {
-//                    lastPosition+=2;
-//                }
-//                if(lastPosition>=0 && lastPosition<fragments.size()) {
-//                    parentActivity.getCurrentWebView(lastPosition);
-//                } else {
-//                    parentActivity.getCurrentWebView(position);
-//                }
-                parentActivity.getCurrentWebView(viewPager.getCurrentItem());
+                parentActivity.updateTitle(getCurrentTitle());
+                parentActivity.updateUrl(getCurrentUrL());
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
 
             }
-        };
-        viewPager.addOnPageChangeListener(pageChangeListener);
+        });
 
-        FragmentStateAdapter fsa=new MyFragmentStateAdapter(getActivity());
         return myView;
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putSerializable("myViewFragments",fragments);
     }
 
-    public void addTab() {
-        fragments.add(new PageViewerFragment());
-        Objects.requireNonNull(viewPager.getAdapter()).notifyDataSetChanged();
-        viewPager.setCurrentItem(fragments.size()-1);
-        parentActivity.getCurrentWebView(viewPager.getCurrentItem());
+    public void notifyWebsitesChanged() {
+        viewPager.getAdapter().notifyDataSetChanged();
+    }
+
+    public void showTab(int index) {
+        viewPager.setCurrentItem(index);
+    }
+
+    public void go(String url) {
+        getPageViewer(viewPager.getCurrentItem()).gettingUrl(url);
     }
 
 
-    private class MyFragmentStateAdapter extends FragmentStateAdapter{
-        public MyFragmentStateAdapter(@NonNull FragmentActivity fragmentActivity) {
-            super(fragmentActivity);
-        }
-
-        @NonNull
-        @Override
-        public Fragment createFragment(int position) {
-            return null;
-        }
-
-        @Override
-        public int getItemCount() {
-            return 0;
-        }
-        public int getItemPosition(@NonNull Object object) {
-            if(fragments.contains(object))
-                return fragments.indexOf(object);
-            else
-                return -1;
-        }
+    public void forward() {
+        getPageViewer(viewPager.getCurrentItem()).forward();
     }
-    interface getCurrentWebViewInterface {
-        void getCurrentWebView(int position);
 
+    public void back() {
+        getPageViewer(viewPager.getCurrentItem()).back();;
+    }
+
+    public String getCurrentUrL() {
+        return getPageViewer(viewPager.getCurrentItem()).getCurrentUrl();
+    }
+
+    public String getCurrentTitle() {
+        return getPageViewer(viewPager.getCurrentItem()).getCurrentTitle();
+    }
+
+    public PageViewerFragment getPageViewer(int position) {
+        return (PageViewerFragment) ((FragmentStatePagerAdapter) viewPager.getAdapter()).getItem(position);
+    }
+
+
+    interface PagerInterface {
+        void updateUrl(String url);
+        void updateTitle(String title);
     }
 }

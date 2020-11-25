@@ -80,13 +80,13 @@ public class PageControlFragment extends Fragment {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                parentActivity.buttonClick((1));
+                parentActivity.buttonClickback();
             }
         });
         forwardButton.setOnClickListener((new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                parentActivity.buttonClick(2);
+                parentActivity.buttonClickforward();
             }
         }));
 
@@ -97,7 +97,8 @@ public class PageControlFragment extends Fragment {
 
     interface buttonClickInterface {
         void buttonClick(String Url);
-        void buttonClick(int i);
+        void buttonClickforward();
+        void buttonClickback();
     }
 
     public void displayCurrentUrl(String s) {

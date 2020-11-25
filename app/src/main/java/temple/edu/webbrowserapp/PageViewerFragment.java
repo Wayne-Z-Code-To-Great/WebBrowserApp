@@ -15,10 +15,10 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-public class PageViewerFragment extends Fragment {
+public class PageViewerFragment extends Fragment{
     WebView webView;
-    String currentUrl;
-    String currentTitle;
+    private String currentUrl;
+    private String currentTitle;
     sentCurrentUrlInterface parentActivity;
     public PageViewerFragment() {
         // Required empty public constructor
@@ -46,21 +46,25 @@ public class PageViewerFragment extends Fragment {
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
                 currentUrl=url;
-                parentActivity.sentlink(url);
             }
             public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
                 currentTitle=view.getTitle();
-                parentActivity.sentTitle(currentTitle);
-                parentActivity.sentTitleToList(currentTitle);
             }
         });
+//        currentTitle=webView.getTitle();
+//        currentUrl=webView.getUrl();
+//        parentActivity.sentTitle(currentTitle);
+//        parentActivity.sentlink(currentUrl);
+
         webView.getSettings().setLoadsImagesAutomatically(true);
         webView.getSettings().setJavaScriptEnabled(true); //enable javascript
         webView.getSettings().setLoadWithOverviewMode(true);
         webView.getSettings().setUseWideViewPort(true);
-        parentActivity.sentlink(webView.getUrl());
         if(savedInstanceState!=null) {
             webView.restoreState(savedInstanceState);
+            savedInstanceState.getString("url", currentUrl);
+            savedInstanceState.getString("title", currentTitle);
         }
         return v;
     }
@@ -68,28 +72,45 @@ public class PageViewerFragment extends Fragment {
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         webView.saveState(outState);
+        outState.putString("url", currentUrl);
+        outState.putString("title", currentTitle);
     }
 
 
     public void gettingUrl(String message) {
-        String url;
-        url=message;
-        currentUrl=url;
-        webView.loadUrl(url);
+        currentUrl=message;
+        webView.loadUrl(currentUrl);
+        parentActivity.sentTitle(currentTitle);
+        parentActivity.sentlink(currentUrl);
     }
 
-    public void forwardOrback(int condition) {
-        if(condition==1) {
-            webView.goBack();
-        } else {
-            webView.goForward();
-        }
+    public void forward() {
+        webView.goForward();
+        currentUrl=webView.getUrl();
+        parentActivity.sentTitle(currentTitle);
+        parentActivity.sentlink(currentUrl);
+    }
+
+    public void back() {
+        webView.goBack();
+        currentUrl=webView.getUrl();
+        parentActivity.sentTitle(currentTitle);
+        parentActivity.sentlink(currentUrl);
+    }
+
+
+
+    public String getCurrentTitle() {
+        return webView.getTitle();
+    }
+
+    public String getCurrentUrl() {
+        return webView.getUrl();
     }
 
     interface sentCurrentUrlInterface {
         void sentlink(String s);
         void sentTitle(String s);
-        void sentTitleToList(String s);
     }
 
 }

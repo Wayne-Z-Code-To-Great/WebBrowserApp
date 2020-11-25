@@ -9,16 +9,25 @@ import android.app.Activity;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.widget.ArrayAdapter;
+
+import java.util.ArrayList;
 
 public class BrowserActivity extends AppCompatActivity implements PageControlFragment.buttonClickInterface, PageViewerFragment.sentCurrentUrlInterface, BrowserControlFragment.imageButtonClickInterface,
-PagerFragment.getCurrentWebViewInterface, PageListFragment.updateTitleToWebView{
-    PageControlFragment controlFragment=new PageControlFragment();
-    PagerFragment pagerFragment=new PagerFragment();
-    BrowserControlFragment browserControlFragment=new BrowserControlFragment();
-    PageViewerFragment currentFragment=new PageViewerFragment();
-    PageListFragment pageListFragment=new PageListFragment();
+PagerFragment.PagerInterface, PageListFragment.PageListInterface {
+
+
+    PageControlFragment controlFragment;
+    PagerFragment pagerFragment;
+    BrowserControlFragment browserControlFragment;
+    PageListFragment pageListFragment;
+    ArrayList<PageViewerFragment> pages;
+
+
     FragmentManager manager;
+    private final String PAGE_KEY= "pages";
     int orientation;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,6 +35,13 @@ PagerFragment.getCurrentWebViewInterface, PageListFragment.updateTitleToWebView{
         manager=getSupportFragmentManager();
 
         Fragment temporary;
+
+        if(savedInstanceState!=null)
+            pages=(ArrayList) savedInstanceState.getSerializable(PAGE_KEY);
+        else
+            pages=new ArrayList<>();
+
+        orientation=getResources().getConfiguration().orientation;
 
 
 
@@ -36,12 +52,6 @@ PagerFragment.getCurrentWebViewInterface, PageListFragment.updateTitleToWebView{
             manager.beginTransaction().add(R.id.page_control_container, controlFragment).commit();
         }
 
-        if((temporary=manager.findFragmentById(R.id.page_viewer_container)) instanceof PagerFragment) {
-            pagerFragment=(PagerFragment) temporary;
-        } else {
-            pagerFragment=new PagerFragment();
-            manager.beginTransaction().add(R.id.page_viewer_container, pagerFragment).commit();
-        }
 
         if((temporary=manager.findFragmentById(R.id.browser_control_container)) instanceof BrowserControlFragment) {
             browserControlFragment=(BrowserControlFragment) temporary;
@@ -50,46 +60,51 @@ PagerFragment.getCurrentWebViewInterface, PageListFragment.updateTitleToWebView{
             manager.beginTransaction().add(R.id.browser_control_container, browserControlFragment).commit();
         }
 
-        orientation=getResources().getConfiguration().orientation;
+
+        if((temporary=manager.findFragmentById(R.id.page_viewer_container)) instanceof PagerFragment) {
+            pagerFragment=(PagerFragment) temporary;
+        } else {
+            pagerFragment=pagerFragment.newInstance(pages);
+            manager.beginTransaction().add(R.id.page_viewer_container, pagerFragment).commit();
+        }
+
+
         if(orientation== Configuration.ORIENTATION_LANDSCAPE) {
             if((temporary=manager.findFragmentById(R.id.page_list_container)) instanceof PageListFragment) {
                 pageListFragment=(PageListFragment) temporary;
             } else {
-                pageListFragment=new PageListFragment();
+                pageListFragment=PageListFragment.newInstance(pages);
                 manager.beginTransaction().add(R.id.page_list_container, pageListFragment).commit();
             }
         }
-
-
-
     }
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        getSupportFragmentManager().putFragment(outState,"currentPagerFragment", pagerFragment);
-        getSupportFragmentManager().putFragment(outState, "currentControlFragment", controlFragment);
-        getSupportFragmentManager().putFragment(outState, "currentBrowserControlFragment", browserControlFragment);
-        manager.beginTransaction().add(currentFragment, "fragment1");
-        getSupportFragmentManager().putFragment(outState, "myCurrentFragment", currentFragment);
+        outState.putSerializable(PAGE_KEY, pages);
     }
 
-    @Override
-    public void onRestoreInstanceState(@Nullable Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        pagerFragment=(PagerFragment) getSupportFragmentManager().getFragment(savedInstanceState, "currentPagerFragment");
-        controlFragment=(PageControlFragment) getSupportFragmentManager().getFragment(savedInstanceState, "currentControlFragment");
-        browserControlFragment=(BrowserControlFragment) getSupportFragmentManager().getFragment(savedInstanceState, "currentBrowserControlFragment");
-        currentFragment=(PageViewerFragment) getSupportFragmentManager().getFragment(savedInstanceState, "fragment1");
-    }
 
     @Override
     public void buttonClick(String Url) {
-        currentFragment.gettingUrl(Url);
+        if(pages.size()>0)
+            pagerFragment.go(Url);
+        else {
+            pages.add(new PageViewerFragment());
+            notifyWebsitesChanged();
+            pagerFragment.showTab(pages.size()-1);
+        }
     }
 
     @Override
-    public void buttonClick(int i) {
-        currentFragment.forwardOrback(i);
+    public void buttonClickforward() {
+        pagerFragment.forward();
+    }
+
+    @Override
+    public void buttonClickback() {
+        pagerFragment.back();
     }
 
     @Override
@@ -102,29 +117,33 @@ PagerFragment.getCurrentWebViewInterface, PageListFragment.updateTitleToWebView{
         this.setTitle(s);
     }
 
-    @Override
-    public void sentTitleToList(String s) {
+    private void notifyWebsitesChanged() {
+        pagerFragment.notifyWebsitesChanged();
         if(orientation==Configuration.ORIENTATION_LANDSCAPE)
-            pageListFragment.webTitles.add(s);
+            pageListFragment.notifyWebsitesChanged();
     }
+
 
     @Override
     public void imageButtonClick() {
-        pagerFragment.addTab();
+        pages.add(new PageViewerFragment());
+        notifyWebsitesChanged();
+        pagerFragment.showTab(pages.size()-1);
     }
 
     @Override
-    public void getCurrentWebView(int position) {
-        currentFragment=pagerFragment.fragments.get(pagerFragment.viewPager.getCurrentItem());
-        this.setTitle(pagerFragment.fragments.get(pagerFragment.viewPager.getCurrentItem()).currentTitle);
-        controlFragment.displayCurrentUrl(pagerFragment.fragments.get(pagerFragment.viewPager.getCurrentItem()).currentUrl);
-    }
-
-
-
     public void titleClickAction(int position) {
-//        pageListFragment.webTitles.add(pagerFragment.fragments.get(pagerFragment.viewPager.getCurrentItem()).currentUrl);
+        pagerFragment.showTab(position);
     }
 
 
+    @Override
+    public void updateUrl(String url) {
+        controlFragment.displayCurrentUrl(url);
+    }
+
+    @Override
+    public void updateTitle(String title) {
+        this.setTitle(title);
+    }
 }

@@ -10,8 +10,10 @@ import androidx.viewpager.widget.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
 
 import java.lang.reflect.Array;
@@ -19,27 +21,36 @@ import java.util.ArrayList;
 
 public class PageListFragment extends Fragment {
 
-    ArrayList<String> webTitles;
-    ArrayAdapter<String> arrayAdapter;
-    ListView listView;
-    updateTitleToWebView parentActivity;
+    private ArrayList<PageViewerFragment> pages;
+    private ListView listView;
+    PageListInterface parentActivity;
+
+    private static final String PAGES_KEY="pages";
+
     public PageListFragment() {
         // Required empty public constructor
     }
 
-
+    public static PageListFragment newInstance(ArrayList<PageViewerFragment> webTitles) {
+        PageListFragment fragment=new PageListFragment();
+        Bundle args=new Bundle();
+        args.putSerializable(PAGES_KEY, webTitles);
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        if(getArguments()!=null)
+            pages=(ArrayList) getArguments().getSerializable(PAGES_KEY);
     }
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if (context instanceof updateTitleToWebView) {
-            parentActivity = (updateTitleToWebView) context;
+        if (context instanceof PageListInterface) {
+            parentActivity = (PageListInterface) context;
         } else {
             throw new RuntimeException("You must implement ButtonClickInterface to attach this fragment");
         }
@@ -50,16 +61,13 @@ public class PageListFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View myView=inflater.inflate(R.layout.fragment_page_list, container, false);
-        listView=(ListView) myView.findViewById(R.id.webTitlesList);
-        if(savedInstanceState!=null) {
-            webTitles=(ArrayList<String>) savedInstanceState.getSerializable("Title_list");
-            arrayAdapter=new ArrayAdapter<String>(getActivity(), R.layout.simple_textview, webTitles);
-            listView.setAdapter(arrayAdapter);
-        } else {
-            webTitles=new ArrayList<String>();
-            arrayAdapter=new ArrayAdapter<String>(getActivity(), R.layout.simple_textview, webTitles);
-            listView.setAdapter(arrayAdapter);
+        listView= myView.findViewById(R.id.webTitlesList);
+        ArrayList<String> allWebTitles = new ArrayList<String>();
+        for(int i=0; i<pages.size(); i++) {
+            allWebTitles.add(pages.get(i).getCurrentTitle());
         }
+        listView.setAdapter(new ArrayAdapter<String>(getActivity(), R.layout.simple_textview, allWebTitles));
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -68,18 +76,13 @@ public class PageListFragment extends Fragment {
         });
         return myView;
     }
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putSerializable("Title_list", webTitles);
 
+    public void notifyWebsitesChanged() {
+        if(listView!=null)
+            ((BaseAdapter) listView.getAdapter()).notifyDataSetChanged();
     }
 
-    interface updateTitleToWebView {
+    interface PageListInterface {
         void titleClickAction(int position);
-    }
-
-    public void addTitleToList(String title) {
-        webTitles.add(title);
     }
 }
