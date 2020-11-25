@@ -20,6 +20,7 @@ public class PageViewerFragment extends Fragment{
     private String currentUrl;
     private String currentTitle;
     sentCurrentUrlInterface parentActivity;
+    private boolean avoidMultipleCall; //a lock to ensure onPageStart and onPageFinished does not get call when user make swipe across the viewpager
     public PageViewerFragment() {
         // Required empty public constructor
     }
@@ -42,14 +43,21 @@ public class PageViewerFragment extends Fragment{
         webView= v.findViewById(R.id.webView);
         webView.canGoBack();
         webView.canGoForward();
-        webView.setWebViewClient(new WebViewClient(){
+        avoidMultipleCall=false;
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
-                currentUrl=url;
+                if(avoidMultipleCall!=false) {
+                    parentActivity.sentlink(url);
+                }
             }
+            @Override
             public void onPageFinished(WebView view, String url) {
-                super.onPageFinished(view, url);
-                currentTitle=view.getTitle();
+                if(avoidMultipleCall!=false) {
+                    getActivity().setTitle(view.getTitle());
+                    avoidMultipleCall=false;
+                }
             }
         });
 //        currentTitle=webView.getTitle();
@@ -80,22 +88,14 @@ public class PageViewerFragment extends Fragment{
     public void gettingUrl(String message) {
         currentUrl=message;
         webView.loadUrl(currentUrl);
-        parentActivity.sentTitle(currentTitle);
-        parentActivity.sentlink(currentUrl);
     }
 
     public void forward() {
         webView.goForward();
-        currentUrl=webView.getUrl();
-        parentActivity.sentTitle(currentTitle);
-        parentActivity.sentlink(currentUrl);
     }
 
     public void back() {
         webView.goBack();
-        currentUrl=webView.getUrl();
-        parentActivity.sentTitle(currentTitle);
-        parentActivity.sentlink(currentUrl);
     }
 
 
@@ -108,9 +108,12 @@ public class PageViewerFragment extends Fragment{
         return webView.getUrl();
     }
 
+    public void setAvoidMultipleCall(boolean newLock) {
+        this.avoidMultipleCall=newLock;
+    }
     interface sentCurrentUrlInterface {
         void sentlink(String s);
-        void sentTitle(String s);
+//        void sentTitle(String s);
     }
 
 }

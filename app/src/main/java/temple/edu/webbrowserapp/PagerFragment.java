@@ -122,15 +122,18 @@ public class PagerFragment extends Fragment {
     }
 
     public void go(String url) {
+        getPageViewer(viewPager.getCurrentItem()).setAvoidMultipleCall(true);
         getPageViewer(viewPager.getCurrentItem()).gettingUrl(url);
     }
 
 
     public void forward() {
+        getPageViewer(viewPager.getCurrentItem()).setAvoidMultipleCall(true);
         getPageViewer(viewPager.getCurrentItem()).forward();
     }
 
     public void back() {
+        getPageViewer(viewPager.getCurrentItem()).setAvoidMultipleCall(true);
         getPageViewer(viewPager.getCurrentItem()).back();;
     }
 
