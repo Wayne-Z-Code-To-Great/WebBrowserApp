@@ -1,5 +1,5 @@
 package temple.edu.webbrowserapp;
-
+//Lab8
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
