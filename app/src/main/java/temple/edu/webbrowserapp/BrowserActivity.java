@@ -100,11 +100,14 @@ PagerFragment.PagerInterface, PageListFragment.PageListInterface {
     @Override
     public void buttonClickforward() {
         pagerFragment.forward();
+        notifyWebsitesChanged();
+
     }
 
     @Override
     public void buttonClickback() {
         pagerFragment.back();
+        notifyWebsitesChanged();
     }
 
     @Override
@@ -112,10 +115,10 @@ PagerFragment.PagerInterface, PageListFragment.PageListInterface {
         controlFragment.displayCurrentUrl(s);
     }
 
-//    @Override
-//    public void sentTitle(String s) {
-//        this.setTitle(s);
-//    }
+    @Override
+    public void sentTitle(String s) {
+        this.setTitle(s);
+    }
 
     private void notifyWebsitesChanged() {
         pagerFragment.notifyWebsitesChanged();

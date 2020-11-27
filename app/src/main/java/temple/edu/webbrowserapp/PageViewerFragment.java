@@ -55,7 +55,7 @@ public class PageViewerFragment extends Fragment{
             @Override
             public void onPageFinished(WebView view, String url) {
                 if(avoidMultipleCall!=false) {
-                    getActivity().setTitle(view.getTitle());
+                    parentActivity.sentTitle(view.getTitle());
                     avoidMultipleCall=false;
                 }
             }
@@ -73,6 +73,7 @@ public class PageViewerFragment extends Fragment{
             webView.restoreState(savedInstanceState);
             savedInstanceState.getString("url", currentUrl);
             savedInstanceState.getString("title", currentTitle);
+            savedInstanceState.getBoolean("condition", avoidMultipleCall);
         }
         return v;
     }
@@ -82,6 +83,7 @@ public class PageViewerFragment extends Fragment{
         webView.saveState(outState);
         outState.putString("url", currentUrl);
         outState.putString("title", currentTitle);
+        outState.putBoolean("condition", avoidMultipleCall);
     }
 
 
@@ -113,7 +115,7 @@ public class PageViewerFragment extends Fragment{
     }
     interface sentCurrentUrlInterface {
         void sentlink(String s);
-//        void sentTitle(String s);
+        void sentTitle(String s);
     }
 
 }
