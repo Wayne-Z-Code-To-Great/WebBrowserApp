@@ -17,6 +17,8 @@ public class BrowserControlFragment extends Fragment {
 
     imageButtonClickInterface parentActivity;
     ImageButton imageButton;
+    ImageButton saveBookmarkButton;
+    ImageButton loadBookmarkButton;
     public BrowserControlFragment() {
         // Required empty public constructor
     }
@@ -44,10 +46,24 @@ public class BrowserControlFragment extends Fragment {
         // Inflate the layout for this fragment
         View myView=inflater.inflate(R.layout.fragment_browser_control, container, false);
         imageButton= myView.findViewById(R.id.addTapButton);
+        saveBookmarkButton=myView.findViewById(R.id.saveBookmarkButton);
+        loadBookmarkButton=myView.findViewById(R.id.loadBookmarkButton);
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 parentActivity.imageButtonClick();
+            }
+        });
+        saveBookmarkButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                parentActivity.saveBookmark();
+            }
+        });
+        loadBookmarkButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                parentActivity.openBookmark();
             }
         });
         return myView;
@@ -55,5 +71,7 @@ public class BrowserControlFragment extends Fragment {
 
     interface imageButtonClickInterface {
         void imageButtonClick();
+        void saveBookmark();
+        void openBookmark();
     }
 }

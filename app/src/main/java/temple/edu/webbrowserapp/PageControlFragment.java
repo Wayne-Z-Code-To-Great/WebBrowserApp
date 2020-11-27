@@ -13,23 +13,13 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link PageControlFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class PageControlFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+public class PageControlFragment extends Fragment {
 
     private static final String ARG_PARAM1 = "URL_text";
     buttonClickInterface parentActivity;
     EditText url_text;
 
-    // TODO: Rename and change types of parameters
-
-    private String mURL_text;
 
     public PageControlFragment() {
         // Required empty public constructor
@@ -56,7 +46,7 @@ public class PageControlFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mURL_text = getArguments().getString(ARG_PARAM1);
+            String mURL_text = getArguments().getString(ARG_PARAM1);
         }
 
     }
