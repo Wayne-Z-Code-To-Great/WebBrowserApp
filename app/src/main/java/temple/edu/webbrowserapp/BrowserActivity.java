@@ -1,24 +1,22 @@
 package temple.edu.webbrowserapp;
 //Lab9
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 
 public class BrowserActivity extends AppCompatActivity implements PageControlFragment.buttonClickInterface, PageViewerFragment.sentCurrentUrlInterface, BrowserControlFragment.imageButtonClickInterface,
 PagerFragment.PagerInterface, PageListFragment.PageListInterface {
@@ -30,8 +28,8 @@ PagerFragment.PagerInterface, PageListFragment.PageListInterface {
     PageListFragment pageListFragment;
     ArrayList<PageViewerFragment> pages;
 
-    ArrayList<String> titlesInBookmark;
-    ArrayList<String> addressesInBookmark;
+    ArrayList<String> titlesInBookmark=new ArrayList<>();
+    ArrayList<String> addressesInBookmark=new ArrayList<>();
 
     FragmentManager manager;
     private final String PAGE_KEY= "pages";
@@ -103,6 +101,7 @@ PagerFragment.PagerInterface, PageListFragment.PageListInterface {
             pages.add(new PageViewerFragment());
             notifyWebsitesChanged();
             pagerFragment.showTab(pages.size()-1);
+            pagerFragment.go(Url);
         }
     }
 
@@ -152,23 +151,27 @@ PagerFragment.PagerInterface, PageListFragment.PageListInterface {
         titlesInBookmark.add(bookmark_title);
         addressesInBookmark.add(bookmark_address);
         Toast.makeText(this, "Bookmark Saved", Toast.LENGTH_SHORT).show();
-        Set<String> title_set= new HashSet<>(titlesInBookmark);
-        Set<String> address_set= new HashSet<>(addressesInBookmark);
-        editor.putStringSet("titles_bookmark_set", title_set);
-        editor.putStringSet("addresses_bookmark_set", address_set);
+        Gson gson=new Gson();
+        String title_json=gson.toJson(titlesInBookmark);
+        String address_json=gson.toJson(addressesInBookmark);
+        editor.putString("titles_bookmark_set", title_json);
+        editor.putString("addresses_bookmark_set", address_json);
         editor.commit();
     }
 
     @Override
     public void openBookmark() {
         SharedPreferences sharedPreferences=getSharedPreferences("SavedData", MODE_PRIVATE);
-        Set<String> title_set=sharedPreferences.getStringSet("titles_bookmark_set", null);
-        Set<String> address_set=sharedPreferences.getStringSet("addresses_bookmark_set", null);
-        titlesInBookmark.addAll(title_set);
-        addressesInBookmark.addAll(address_set);
-        Intent bookmarkIntent = new Intent(BrowserActivity.this, BrowserActivity.class);
-        bookmarkIntent.putExtra("bookmarktitles", titlesInBookmark);
-        bookmarkIntent.putExtra("bookmarkaddresses", addressesInBookmark);
+        Gson gson=new Gson();
+        String title_json=sharedPreferences.getString("titles_bookmark_set", null);
+        String address_json=sharedPreferences.getString("addresses_bookmark_set", null);
+        Type title_type=new TypeToken<ArrayList<String>>(){}.getType();
+        Type address_type=new TypeToken<ArrayList<String>>(){}.getType();
+        titlesInBookmark=gson.fromJson(title_json, title_type);
+        addressesInBookmark=gson.fromJson(address_json, address_type);
+        Intent bookmarkIntent = new Intent(BrowserActivity.this, BookmarksActivity.class);
+        bookmarkIntent.putExtra("bookmarktitles", this.titlesInBookmark);
+        bookmarkIntent.putExtra("bookmarkaddresses", this.addressesInBookmark);
         startActivityForResult(bookmarkIntent, 1);
     }
 

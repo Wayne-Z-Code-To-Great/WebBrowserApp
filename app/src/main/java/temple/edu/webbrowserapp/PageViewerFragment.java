@@ -8,6 +8,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +17,9 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-public class PageViewerFragment extends Fragment{
+import java.io.Serializable;
+
+public class PageViewerFragment extends Fragment implements Serializable, Parcelable {
     WebView webView;
     private String currentUrl;
     private String currentTitle;
@@ -113,6 +117,17 @@ public class PageViewerFragment extends Fragment{
     public void setAvoidMultipleCall(boolean newLock) {
         this.avoidMultipleCall=newLock;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        
+    }
+
     interface sentCurrentUrlInterface {
         void sentlink(String s);
         void sentTitle(String s);
