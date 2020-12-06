@@ -3,13 +3,16 @@ package temple.edu.webbrowserapp;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.loader.content.AsyncTaskLoader;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +31,24 @@ public class PageViewerFragment extends Fragment implements Serializable, Parcel
     public PageViewerFragment() {
         // Required empty public constructor
     }
+
+    protected PageViewerFragment(Parcel in) {
+        currentUrl = in.readString();
+        currentTitle = in.readString();
+        avoidMultipleCall = in.readByte() != 0;
+    }
+
+    public static final Creator<PageViewerFragment> CREATOR = new Creator<PageViewerFragment>() {
+        @Override
+        public PageViewerFragment createFromParcel(Parcel in) {
+            return new PageViewerFragment(in);
+        }
+
+        @Override
+        public PageViewerFragment[] newArray(int size) {
+            return new PageViewerFragment[size];
+        }
+    };
 
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -93,7 +114,9 @@ public class PageViewerFragment extends Fragment implements Serializable, Parcel
 
     public void gettingUrl(String message) {
         currentUrl=message;
-        webView.loadUrl(currentUrl);
+        if(webView!=null) {
+            webView.loadUrl(currentUrl);
+        }
     }
 
     public void forward() {
@@ -125,12 +148,17 @@ public class PageViewerFragment extends Fragment implements Serializable, Parcel
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        
+
+        dest.writeString(currentUrl);
+        dest.writeString(currentTitle);
+        dest.writeByte((byte) (avoidMultipleCall ? 1 : 0));
     }
 
     interface sentCurrentUrlInterface {
         void sentlink(String s);
         void sentTitle(String s);
     }
+
+
 
 }

@@ -4,7 +4,10 @@ package temple.edu.webbrowserapp;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -84,6 +87,24 @@ PagerFragment.PagerInterface, PageListFragment.PageListInterface {
                 manager.beginTransaction().add(R.id.page_list_container, pageListFragment).commit();
             }
         }
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Intent receivedIntent=getIntent();
+        String receivedAction=receivedIntent.getAction();
+        if(Intent.ACTION_VIEW.equals(receivedAction)) {
+            Uri uri = receivedIntent.getData();
+            String str =uri.toString();
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                public void run() {
+                    buttonClick(str);
+                }
+            }, 1000);
+        }
     }
 
     @Override
@@ -127,6 +148,8 @@ PagerFragment.PagerInterface, PageListFragment.PageListInterface {
     public void sentTitle(String s) {
         this.setTitle(s);
     }
+
+
 
     private void notifyWebsitesChanged() {
         pagerFragment.notifyWebsitesChanged();
@@ -200,4 +223,7 @@ PagerFragment.PagerInterface, PageListFragment.PageListInterface {
     public void updateTitle(String title) {
         this.setTitle(title);
     }
+
+
+
 }
