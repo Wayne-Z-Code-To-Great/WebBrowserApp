@@ -1,5 +1,5 @@
 package temple.edu.webbrowserapp;
-//Lab9
+//Lab10
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -7,7 +7,9 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -225,5 +227,24 @@ PagerFragment.PagerInterface, PageListFragment.PageListInterface {
     }
 
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.action_share, menu);
+        return true;
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.share:
+                Intent sendIntent=new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, pagerFragment.getCurrentTitle()+"\n"+pagerFragment.getCurrentUrL());
+                sendIntent.setType("text/plain");
+
+                Intent shareIntent=Intent.createChooser(sendIntent, null);
+                startActivity(shareIntent);
+        }
+        return true;
+    }
 }
