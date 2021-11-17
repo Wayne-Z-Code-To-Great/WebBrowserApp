@@ -8,13 +8,13 @@
 
     <FrameLayout
         android:id="@+id/page_control_container"
-        android:layout_width="match_parent"
-        android:layout_height="90dp"
-        android:layout_marginTop="4dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/browser_control_container"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0">
 
     </FrameLayout>
 
@@ -31,24 +31,25 @@
 
     <FrameLayout
         android:id="@+id/page_list_container"
-        android:layout_width="216dp"
+        android:layout_width="0dp"
         android:layout_height="161dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/page_viewer_container"
-        app:layout_constraintHorizontal_bias="0.3"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/page_control_container"
-        app:layout_constraintVertical_bias="1.0">
+        app:layout_constraintEnd_toStartOf="@+id/page_viewer_container"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent">
 
     </FrameLayout>
 
     <FrameLayout
         android:id="@+id/browser_control_container"
-        android:layout_width="225dp"
-        android:layout_height="60dp"
-        android:layout_marginBottom="9dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/page_list_container"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintEnd_toStartOf="@+id/page_viewer_container"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@id/page_control_container"
+        app:layout_constraintTop_toTopOf="@id/page_viewer_container"
+        app:layout_constraintVertical_bias="0.0">
 
     </FrameLayout>
 
