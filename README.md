@@ -5,7 +5,7 @@ A web browsing APP for the Android system, that incorporates a responsive design
 | ------------- | ------------- |
 | <img src="https://github.com/WayneJWZLemon/WebBrowserApp/blob/master/DemoImages/Portrait.png" width="400"> | <img src="https://github.com/WayneJWZLemon/WebBrowserApp/blob/master/DemoImages/Landscape.png" height="400"> |
 
-| Swiping between Tabs | Saving to Booksmarks  |
+| Saving to Booksmarks | Swiping between Tabs |
 | ------------- | ------------- |
-| <img src="https://github.com/WayneJWZLemon/WebBrowserApp/blob/master/DemoImages/Swiping.gif" width="400"> | <img src="https://github.com/WayneJWZLemon/WebBrowserApp/blob/master/DemoImages/Saving.gif" width="400"> |
+| <img src="https://github.com/WayneJWZLemon/WebBrowserApp/blob/master/DemoImages/Saving.gif" width="400"> | <img src="https://github.com/WayneJWZLemon/WebBrowserApp/blob/master/DemoImages/Swiping.gif" width="400"> |
 
